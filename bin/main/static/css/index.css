@@ -1,0 +1,15 @@
+.editorBox{
+    
+}
+.blog-form{
+    border: 1px solid black;
+    margin: 0px 8%;
+}
+.main-text{
+    font-weight: 600;
+    font-size: 25px;
+    text-align: center;
+    text-shadow: 1px 1.3px 1.5px rgba(0, 0, 0, 0.4);
+    margin: 0px 0px 20px 2px;
+    font-weight: bold;
+}
