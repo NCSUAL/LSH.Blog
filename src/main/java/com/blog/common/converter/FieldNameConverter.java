@@ -10,7 +10,7 @@ import com.blog.exception.blog.NotFoundFieldException;
 import jakarta.persistence.AttributeConverter;
 
 public class FieldNameConverter implements AttributeConverter<FieldName, String>{
-
+    
     @Override
     public String convertToDatabaseColumn(FieldName attribute) {
         return attribute.getSkill();
