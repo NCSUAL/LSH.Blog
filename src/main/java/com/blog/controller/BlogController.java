@@ -1,15 +1,23 @@
 package com.blog.controller;
 
-import org.springframework.stereotype.Controller;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping(value = "/blog")
+import com.blog.dto.ApiEntity;
+import com.blog.dto.response.BlogResponse;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping(value = "/api/blog")
+@RequiredArgsConstructor
 public class BlogController {
 
     @RequestMapping(method = RequestMethod.GET)
-    public String index(){
-        return "index";
+    public ApiEntity<List<BlogResponse>> getAllBlogsWithBlogResponse(){
+        
     }
 }
