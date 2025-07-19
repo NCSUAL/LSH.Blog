@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+  <!-- Highlight.js 스타일 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+
+<!-- Highlight.js JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+  <title>블로그 글쓰기</title>
+  <style>
+    .editorBox {
+      margin-top: 10px;
+    }
+    #editor {
+      height: 300px;
+      background-color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content" onsubmit="false">
+    <p class="main-text">블로그 글 작성</p>
+    <form class="blog-form" onsubmit="return false;">
+      <div class="content">
+        <div class="title">
+          <label class="main-title-text" for="input-label">제목</label>
+          <input type="text" id="input-label" name="input-title">
+        </div>
+
+        <!-- 🔽 에디터 박스 (여기에 Quill 에디터 표시) -->
+        <div class="editorBox">
+          <div id="toolbar">
+            <select class="ql-header">
+              <option selected></option>
+              <option value="1">H1</option>
+              <option value="2">H2</option>
+              <option value="3">H3</option>
+            </select>
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-code-block"></button>
+            <button class="ql-list" value="ordered"></button>
+            <button class="ql-list" value="bullet"></button>
+            <button class="ql-align" value=""></button>
+            <button class="ql-align" value="center"></button>
+            <button class="ql-align" value="right"></button>
+            <button class="ql-image"></button>
+          </div>
+          <div id="editor"></div>
+        </div>
+      </div>
+
+      <div class="field-title">
+        <label class="field-text" for="field-label">분야</label>
+        <input type="text" id="field-label" name="field-title">
+      </div>
+    </form>
+  </div>
+
+  <!-- Quill JS (마지막에 로드) -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+  <script>
+    window.onload = () => {
+      const quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+          toolbar: '#toolbar'
+        }
+      });
+      // 하이라이팅 적용 (편집기 이외에서 출력 시 사용)
+document.querySelectorAll('pre.ql-syntax').forEach((block) => {
+  block.classList.add('language-java');
+  hljs.highlightElement(block);
+});
+
+    }
+  </script>
+</body>
+</html>

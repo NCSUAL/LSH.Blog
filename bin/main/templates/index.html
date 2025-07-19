@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+
+    <title>블로그 글쓰기</title>
+  
+    <!-- Editor.js Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.30.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@la/dist/bundle.min.js"></script>
+    <!-- Tools: Paragraph, Header, List, Code -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@2.7.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@1.7.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@2.9.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.8.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/editorjs-text-alignment-blocktune@1.0.3/dist/bundle.js"></script>
+    <script th:src="@{/js/SimpleAlignmentTune.js}"></script>
+    <title>Document</title>
+</head>
+<body>
+  <div class="main-content" onsubmit="false">
+    <p class="main-text">블로그 글 작성</p>
+    <form class="blog-form" onsubmit="return false;">
+    <div class="content">
+    <div class ="title">
+      <label class="main-title-text" for="input-label">제목</label>
+      <input type="text" id="input-label" name="input-title">
+    </div>
+    <div class = "editorBox" id="editorjs"></div>
+    </div>
+    <div class ="field-title">
+      <label class="field-text" for="field-label">분야</label>
+      <input type="text" id="field-label" name="field-title">
+    </div>
+    </form>
+  </div>
+  <script>
+    window.onload = () => {
+      const Header            = window.Header;
+      const List              = window.List;
+      const CodeTool          = window.CodeTool;
+      const ImageTool         = window.ImageTool;
+      const AlignmentBlockTune = window.AlignmentBlockTune;
+      const Paragraph = window.Paragraph;
+
+      new EditorJS({
+        holder: 'editorjs',
+        placeholder: '내용을 적어주세요…',
+        paragraph : { class: Paragraph, inlineToolbar:true, tunes:['simpleAlign'] },
+        tools: {
+          header: {
+            class: Header,
+            inlineToolbar: true,
+          },
+          list: {
+            class: List,
+            inlineToolbar: true,
+          },
+          code: {  class: CodeTool },
+          image: {
+            class: ImageTool,
+            config: {
+              endpoints: { byFile: '/upload/image', byUrl: '/fetch/image' }
+            }
+          }
+        },
+          /* ② tunes 섹션에 등록 */
+  tunes: {
+    simpleAlign: SimpleAlignmentTune   // 🟢 단 한 줄
+  },
+        onReady: () => console.log('✅ Editor.js is ready')
+      });
+    };
+    </script>
+</html>

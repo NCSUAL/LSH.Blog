@@ -1,0 +1,10 @@
+/* 툰 버튼 영역 */
+.cdx-simple-align { display:flex; gap:4px; }
+.cdx-align-btn    { padding:2px 6px; border:1px solid #aaa; cursor:pointer; }
+.cdx-align-btn.active { background:#222; color:#fff; }
+
+/* 실제 정렬 효과 */
+[data-align="left"]   { text-align:left;   }
+[data-align="center"] { text-align:center; }
+[data-align="right"]  { text-align:right;  }
+[data-align="justify"]{ text-align:justify;}

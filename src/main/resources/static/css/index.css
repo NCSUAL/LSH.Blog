@@ -1,0 +1,50 @@
+.editorBox {
+    width: 100%;
+    padding: 0 3%;
+    box-sizing: border-box;
+}
+.content{
+    border: 1px solid black;
+    margin: 0px 5%;
+    height: 750px;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.main-text{
+    font-weight: 600;
+    font-size: 25px;
+    text-align: center;
+    text-shadow: 1px 1.3px 1.5px rgba(0, 0, 0, 0.4);
+    margin: 0px 0px 20px 2px;
+    font-weight: bold;
+}
+.title{
+    text-align: center;
+    margin: 10px 0px;
+    width: 100%;
+}
+.field-title{
+    text-align: start;
+    margin: 10px 5%;
+    width: 100%;
+}
+.main-title-text{
+    font-size: 20px;
+    font-weight: 900;
+}
+.field-text{
+    font-size: 20px;
+    font-weight: 900;
+}
+#input-label{
+    height: 30px;
+    width: 90%;
+    border-radius: 5px;
+    border: 1.5px solid gray;
+}
+
+.ce-block__content, .ce-toolbar__content {
+  max-width: 100% !important;
+  width: 100% !important;
+}
