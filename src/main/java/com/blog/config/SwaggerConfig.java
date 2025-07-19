@@ -23,7 +23,7 @@ public class SwaggerConfig {
 
     @Bean
     List<Server> server(){
-        return List.of(new Server().description("본 서버").url("http:://localhost:8000"));
+        return List.of(new Server().description("로컬 서버").url("http://3.37.125.9:8000"));
     }
 
     @Bean

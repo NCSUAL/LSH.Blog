@@ -1,23 +1,25 @@
 package com.blog.domain;
 
+import java.util.Objects;
+
 import com.blog.domain.auditing.BlogAuditing;
 import com.blog.domain.vo.Field;
 import com.blog.domain.vo.Post;
+import com.blog.dto.request.blog.BlogAmendRequest;
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * <p>Blog 관련 엔티티</p>
@@ -25,7 +27,7 @@ import lombok.Setter;
  * @author 이석현
  * @apiNote description
  * <pre>
- *  <p>[pk] BIGINT BLOG_ID | Long id (sequence, notNull) : Blog 엔티티 기본키</p>
+ *  <p>[pk] BIGINT BLOG_ID | Long id (autoIncrement, notNull) : Blog 엔티티 기본키</p>
  *  <p>[property] Embbedded FIELD | Field field (embbedded,notNull) : 분야 관련</p>
  *  <p>[property] Embbedded Post | Post post (embbedded,notNull) : 글 관련</p>
  * </pre>
@@ -33,10 +35,6 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "BLOG", schema = "blog")
-@SequenceGenerator(
-    name = "BLOG_SEQUENCE_GENERATOR", sequenceName = "BLOG_SEQUENCE",
-    initialValue = 5, allocationSize = 100
-)
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -44,17 +42,34 @@ import lombok.Setter;
 public class Blog extends BlogAuditing{
     
     @Id
-    @GeneratedValue(strategy =  GenerationType.SEQUENCE, generator = "BLOG_SEQUENCE_GENERATOR")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "BLOG_ID")
     private Long id;
 
-    @Column(nullable = false, name = "FIELD")
     @Embedded
+    @AttributeOverride(
+        name = "fieldName",
+        column = @Column(name = "FIELD_NAME", nullable = false)
+    )
     private Field field;
 
-    @Column(nullable = false, name = "POST")
     @Embedded
     private Post post;
 
+    public Blog update(BlogAmendRequest blogAmendRequest){
+        this.field = blogAmendRequest.field().toEntity();
+        this.post = blogAmendRequest.post().toEntity();
+        return this;
+    }
+
+    public Blog patch(BlogAmendRequest blogAmendRequest){
+        if(Objects.nonNull(blogAmendRequest.field())){
+            this.field = blogAmendRequest.field().toEntity();
+        }
+        if(Objects.nonNull(blogAmendRequest.post())){
+            this.post = blogAmendRequest.post().toEntity();
+        }
+        return this;
+    }
 
 }

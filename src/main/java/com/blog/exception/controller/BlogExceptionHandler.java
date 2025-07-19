@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.blog.dto.ApiEntity;
 import com.blog.dto.ErrorDto;
 import com.blog.exception.blog.NotFoundBlogException;
+import com.blog.exception.blog.NotFoundFieldException;
 
 @RestControllerAdvice
 public class BlogExceptionHandler {
@@ -17,4 +18,11 @@ public class BlogExceptionHandler {
     public ApiEntity<?> notFoundBlogException(NotFoundBlogException notFoundBlogException){
         return ApiEntity.fail(ErrorDto.of(notFoundBlogException));
     }
+
+    @ExceptionHandler({NotFoundFieldException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiEntity<?> notFoundFieldException(NotFoundFieldException exception){
+        return ApiEntity.fail(ErrorDto.of(exception));
+    }
+    
 }
