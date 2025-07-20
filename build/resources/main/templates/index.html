@@ -5,22 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
   <!-- Highlight.js 스타일 -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
 
-<!-- Highlight.js JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+  <!-- Highlight.js JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+<!-- 1️⃣ Quill core 먼저 -->
+<link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css" />
+<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
 
-  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+  
+<!-- ❷ 이미지‑리사이즈 / 이미지‑드롭 (v1용) -->
+<script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill-image-drop-module@1.0.3/image-drop.min.js"></script>
+
+
   <title>블로그 글쓰기</title>
   <style>
     .editorBox {
       margin-top: 10px;
-    }
-    #editor {
-      height: 300px;
-      background-color: white;
     }
   </style>
 </head>
@@ -64,23 +68,61 @@
     </form>
   </div>
 
-  <!-- Quill JS (마지막에 로드) -->
-  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-  <script>
-    window.onload = () => {
-      const quill = new Quill('#editor', {
-        theme: 'snow',
-        modules: {
-          toolbar: '#toolbar'
-        }
-      });
-      // 하이라이팅 적용 (편집기 이외에서 출력 시 사용)
-document.querySelectorAll('pre.ql-syntax').forEach((block) => {
-  block.classList.add('language-java');
-  hljs.highlightElement(block);
-});
-
+  <script th:inline="none">
+    /* Quill 플러그인 등록 */
+    Quill.register('modules/imageResize', window.ImageResize);
+  
+    /* 공통 업로드 함수 */
+    async function uploadAndInsert(quill, file){
+      const form = new FormData(); form.append('image', file);
+      const res  = await fetch('/api/image',{method:'POST',body:form});
+      if(!res.ok) throw new Error('upload fail');
+      const {url}=await res.json();
+      const range=quill.getSelection()??{index:quill.getLength()};
+      quill.insertEmbed(range.index,'image',url);
+      quill.setSelection(range.index+1);
     }
+  
+    /* Clipboard override */
+    const Clipboard = Quill.import('modules/clipboard');
+    class UploadClipboard extends Clipboard {
+      async onDrop(e){
+        const f=e.dataTransfer?.files?.[0];
+        if(f&&f.type.startsWith('image/')){
+          e.preventDefault(); e.stopPropagation();
+          await uploadAndInsert(this.quill,f);
+          return;
+        }
+        super.onDrop(e);
+      }
+      async onPaste(e){
+        const item=[...e.clipboardData.items]
+                   .find(i=>i.kind==='file'&&i.type.startsWith('image/'));
+        if(item){
+          e.preventDefault(); e.stopPropagation();
+          await uploadAndInsert(this.quill,item.getAsFile());
+          return;
+        }
+        super.onPaste(e);
+      }
+    }
+    Quill.register('modules/clipboard', UploadClipboard, true);
+  
+    /* 에디터 생성 */
+    const quill=new Quill('#editor',{
+      theme:'snow',
+      modules:{
+        toolbar:'#toolbar',
+        imageResize:{modules:['Resize','DisplaySize','Toolbar']}
+      }
+    });
+  
+    /* 툴바 이미지 버튼 */
+    quill.getModule('toolbar').addHandler('image',()=>{
+      const input=document.createElement('input');
+      input.type='file'; input.accept='image/*'; input.click();
+      input.onchange=()=>input.files?.[0]&&uploadAndInsert(quill,input.files[0]);
+    });
   </script>
 </body>
 </html>
