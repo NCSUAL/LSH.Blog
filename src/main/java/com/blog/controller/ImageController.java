@@ -1,15 +1,16 @@
 package com.blog.controller;
 
-import java.util.UUID;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.blog.domain.Image;
 import com.blog.dto.ApiEntity;
+import com.blog.dto.response.ImageResponse;
+import com.blog.service.ImageService;
+import com.blog.utils.ImageUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,12 +19,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value = "/api/image")
 public class ImageController {
 
+    private final ImageService imageService;
+
     @RequestMapping(method = RequestMethod.POST)
-    public ApiEntity<?> uploadImage(@RequestParam("image") MultipartFile image){
-        System.out.println(image.getContentType());
-        System.out.println(image.getName());
-        System.out.println(UUID.randomUUID());
-        ServletUriComponentsBuilder.fromCurrentContextPath().path(null).build().to
-        return ApiEntity.ok("test");
+    public ApiEntity<ImageResponse> uploadImage(@RequestParam("image") MultipartFile image){
+        Image uploadEntity = imageService.uploadImage(ImageUtil.toDto(image));
+        return ApiEntity.ok(ImageResponse.of(uploadEntity));
+
     }
+
 }

@@ -1,5 +1,7 @@
 package com.blog.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.blog.domain.Image;
 
 import lombok.Builder;
@@ -10,11 +12,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Builder
 public final class ImageDto {
+
+    private final MultipartFile file;
+    
     private final String contentType;
 
     private final String fileName;
 
     private final String encryptName;
+
 
     public Image toEntity(){
         return Image.builder()

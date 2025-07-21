@@ -11,10 +11,11 @@ import com.blog.dto.ImageDto;
 
 public class ImageUtil {
 
-    public static ImageDto toEntity(MultipartFile image){
-        final String uuidImageName = UUID.randomUUID().toString().concat(image.getName());
+    public static ImageDto toDto(MultipartFile file){
+        final String uuidImageName = UUID.randomUUID().toString().concat(file.getName());
         return ImageDto.builder()
-            .contentType(image.getContentType())
+            .file(file)
+            .contentType(file.getContentType())
             .fileName(uuidImageName)
             .encryptName(sha256Hex(uuidImageName))
             .build();
