@@ -3,6 +3,7 @@ package com.blog.dto.response;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.blog.domain.Image;
+import com.blog.utils.FileUtil;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -16,8 +17,9 @@ public class ImageResponse {
 
     public static ImageResponse of(final Image image){
         String url = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(FileUtil.getIMAGE_REQUEST_API())
                 .path(image.getEncryptName())
-                .toString();
+                .toUriString();
 
         return ImageResponse.builder()
             .url(url)

@@ -1,6 +1,10 @@
 package com.blog.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import org.hibernate.annotations.BatchSize;
 
 import com.blog.domain.auditing.BlogAuditing;
 import com.blog.domain.vo.Field;
@@ -8,12 +12,15 @@ import com.blog.domain.vo.Post;
 import com.blog.dto.request.blog.BlogAmendRequest;
 
 import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -55,6 +62,11 @@ public class Blog extends BlogAuditing{
 
     @Embedded
     private Post post;
+
+    @OneToMany(mappedBy = "blog",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
+    @Builder.Default
+    private List<Image> images = new ArrayList<>();
 
     public Blog update(BlogAmendRequest blogAmendRequest){
         this.field = blogAmendRequest.field().toEntity();

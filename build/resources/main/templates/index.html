@@ -30,7 +30,6 @@
 </head>
 <body>
   <div class="main-content" onsubmit="false">
-    <p class="main-text">블로그 글 작성</p>
     <form class="blog-form" onsubmit="return false;">
       <div class="content">
         <div class="title">
@@ -69,18 +68,15 @@
   </div>
 
   <script th:inline="none">
-    /* Quill 플러그인 등록 */
-    Quill.register('modules/imageResize', window.ImageResize);
   
     /* 공통 업로드 함수 */
     async function uploadAndInsert(quill, file){
       const form = new FormData(); form.append('image', file);
       const res  = await fetch('/api/image',{method:'POST',body:form});
       if(!res.ok) throw new Error('upload fail');
-      const {url}=await res.json();
-      console.log(url);
+      const json=await res.json();
       const range=quill.getSelection()??{index:quill.getLength()};
-      quill.insertEmbed(range.index,'image',url);
+      quill.insertEmbed(range.index,'image',json.data.url);
       quill.setSelection(range.index+1);
     }
   
@@ -107,15 +103,28 @@
         super.onPaste(e);
       }
     }
+
     Quill.register('modules/clipboard', UploadClipboard, true);
-  
+
     /* 에디터 생성 */
     const quill=new Quill('#editor',{
       theme:'snow',
       modules:{
         toolbar:'#toolbar',
         imageResize:{modules:['Resize','DisplaySize','Toolbar']}
-      }
+      },
+        displayStyles: {
+                backgroundColor: 'black',
+                border: 'none',
+                color: 'white'
+                // other camelCase styles for size display
+            },
+            handleStyles: {
+                backgroundColor: 'black',
+                border: 'none',
+                color: 'white'
+                // other camelCase styles for size display
+            }
     });
   
     /* 툴바 이미지 버튼 */
